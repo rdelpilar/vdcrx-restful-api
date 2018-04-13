@@ -1,7 +1,7 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * SignatureType types
+ * Signature types
  *
  * @author Ranel del Pilar
  */

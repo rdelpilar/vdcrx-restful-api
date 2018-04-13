@@ -1,11 +1,11 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * FacilityType types
+ * Facility types
  *
  * @author Ranel del Pilar
  */
 
 public enum FacilityType {
-    CLINIC, HOSPITAL, UNKNOWN
+    CLINIC, HOSPITAL, HOME, UNKNOWN
 }

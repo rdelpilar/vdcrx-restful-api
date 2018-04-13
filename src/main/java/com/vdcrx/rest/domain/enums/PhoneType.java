@@ -1,7 +1,7 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * PhoneType types
+ * Phone types
  *
  * @author Ranel del Pilar
  */

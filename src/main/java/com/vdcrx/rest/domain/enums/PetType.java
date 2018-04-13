@@ -1,7 +1,7 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * PetType types
+ * Pet types
  *
  * @author Ranel del Pilar
  */

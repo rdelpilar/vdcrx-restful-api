@@ -1,7 +1,7 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * AddressType types
+ * Address types
  *
  * @author Ranel del Pilar
  */
