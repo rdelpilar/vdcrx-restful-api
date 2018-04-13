@@ -1,11 +1,11 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * Provider types
+ * AddressType types
  *
  * @author Ranel del Pilar
  */
 
-public enum Provider {
-    VETERINARIAN, PHYSICIAN
+public enum AddressType {
+    MAILING, BILLING, OFFICE
 }

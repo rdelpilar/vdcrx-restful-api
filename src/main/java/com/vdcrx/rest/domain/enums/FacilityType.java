@@ -1,11 +1,11 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * Signature types
+ * FacilityType types
  *
  * @author Ranel del Pilar
  */
 
-public enum Signature {
-    VETERINARIAN, PHYSICIAN
+public enum FacilityType {
+    CLINIC, HOSPITAL, UNKNOWN
 }

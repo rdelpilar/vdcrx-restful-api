@@ -6,7 +6,7 @@ package com.vdcrx.rest.domain.enums;
  * @author Ranel del Pilar
  */
 
-public enum VetSpecialty {
+public enum VetSpecialtyType {
     ANESTHESIA,
     ANIMAL_WELFARE,
     BEHAVIOR,

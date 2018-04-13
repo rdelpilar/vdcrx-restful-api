@@ -1,12 +1,12 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * Role types
+ * RoleType types
  *
  * @author Ranel del Pilar
  */
 
-public enum Role {
+public enum RoleType {
     ROLE_UNKNOWN,
     ROLE_VETERINARIAN,
     ROLE_PET_OWNER,

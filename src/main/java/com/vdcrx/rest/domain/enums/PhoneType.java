@@ -1,11 +1,11 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * Phone types
+ * PhoneType types
  *
  * @author Ranel del Pilar
  */
 
-public enum Phone {
+public enum PhoneType {
     MOBILE, HOME, WORK, FAX
 }

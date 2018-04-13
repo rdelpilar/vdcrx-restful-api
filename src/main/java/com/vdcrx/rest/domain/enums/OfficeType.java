@@ -1,11 +1,11 @@
 package com.vdcrx.rest.domain.enums;
 
 /**
- * Address types
+ * OfficeType types
  *
  * @author Ranel del Pilar
  */
 
-public enum Address {
-    MAILING, BILLING, OFFICE
+public enum OfficeType {
+    CLINIC, HOSPITAL, HOME
 }
