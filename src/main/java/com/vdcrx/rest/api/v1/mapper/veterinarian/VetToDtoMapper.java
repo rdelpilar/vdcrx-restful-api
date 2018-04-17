@@ -17,7 +17,6 @@ import java.util.Set;
         uses = {SpecialtyToDtoMapper.class},
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-//@DecoratedWith(VetToDtoMapperDecorator.class)
 public interface VetToDtoMapper {
 
     @Mappings({
