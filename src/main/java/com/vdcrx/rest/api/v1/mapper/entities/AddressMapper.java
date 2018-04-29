@@ -15,8 +15,13 @@ import java.util.Set;
  */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface AddressToDtoMapper {
+public interface AddressMapper {
     AddressDto mapToAddressDto(Address address);
+    Address mapToAddress(AddressDto dto);
+
     Set<AddressDto> mapToAddressDtoSet(Set<Address> addresses);
+    Set<Address> mapToAddressSet(Set<AddressDto> addressDtos);
+
     Set<AddressDto> mapListToAddressDtoSet(List<Address> addresses);
+    Set<AddressDto> mapListToAddressSet(List<AddressDto> addressDtos);
 }

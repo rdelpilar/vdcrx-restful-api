@@ -12,6 +12,7 @@ import org.mapstruct.ReportingPolicy;
  */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SignatureToDtoMapper {
+public interface SignatureMapper {
     SignatureDto mapToSignatureDto(Signature signature);
+    Signature mapToSignature(SignatureDto dto);
 }

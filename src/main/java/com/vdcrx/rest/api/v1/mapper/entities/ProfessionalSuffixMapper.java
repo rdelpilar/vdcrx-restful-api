@@ -15,8 +15,10 @@ import java.util.Set;
  */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface ProfessionalSuffixToDtoMapper {
-    ProfessionalSuffixDto mapToProfessionalSuffixDto(ProfessionalSuffix professionalSuffix);
+public interface ProfessionalSuffixMapper {
+    ProfessionalSuffixDto mapToProfessionalSuffixDto(ProfessionalSuffix suffix);
+    ProfessionalSuffix mapToProfessionalSuffix(ProfessionalSuffixDto dto);
+
     Set<ProfessionalSuffixDto> mapToProfessionalSuffixDtoSet(Set<ProfessionalSuffix> suffixes);
     Set<ProfessionalSuffixDto> mapListToProfessionalSuffixDtoSet(List<ProfessionalSuffix> suffixes);
 }

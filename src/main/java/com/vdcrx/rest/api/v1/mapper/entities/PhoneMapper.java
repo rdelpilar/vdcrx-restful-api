@@ -15,8 +15,13 @@ import java.util.Set;
  */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface PhoneToDtoMapper {
+public interface PhoneMapper {
     PhoneDto mapToPhoneDto(Phone phone);
+    Phone mapToPhone(PhoneDto dto);
+
     Set<PhoneDto> mapToPhoneDtoSet(Set<Phone> phones);
+    Set<Phone> mapToPhoneSet(Set<PhoneDto> dtos);
+
     Set<PhoneDto> mapListToPhoneDtoSet(List<Phone> phones);
+    Set<Phone> mapListToPhoneSet(List<PhoneDto> phones);
 }
