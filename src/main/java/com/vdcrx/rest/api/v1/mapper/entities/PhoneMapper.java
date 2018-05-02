@@ -2,11 +2,13 @@ package com.vdcrx.rest.api.v1.mapper.entities;
 
 import com.vdcrx.rest.api.v1.model.dto.PhoneDto;
 import com.vdcrx.rest.domain.entities.Phone;
+import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
 import java.util.Set;
+
+import static com.vdcrx.rest.utils.PhoneNumberUtil.stripWhitespaces;
 
 /**
  * Phone to Dto mapper
@@ -14,14 +16,17 @@ import java.util.Set;
  * @author Ranel del Pilar
  */
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface PhoneMapper {
-    PhoneDto mapToPhoneDto(Phone phone);
-    Phone mapToPhone(PhoneDto dto);
+@Mapper(componentModel = "spring",
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public abstract class PhoneMapper {
 
-    Set<PhoneDto> mapToPhoneDtoSet(Set<Phone> phones);
-    Set<Phone> mapToPhoneSet(Set<PhoneDto> dtos);
+    public abstract PhoneDto mapToPhoneDto(Phone phone);
 
-    Set<PhoneDto> mapListToPhoneDtoSet(List<Phone> phones);
-    Set<Phone> mapListToPhoneSet(List<PhoneDto> phones);
+    public Phone mapToPhone(PhoneDto dto) {
+        return new Phone(dto.getPhoneType(), stripWhitespaces(dto.getPhone()), dto.getPhoneExt());
+    }
+
+    public abstract Set<PhoneDto> mapToPhoneDtoSet(Set<Phone> phones);
+    public abstract Set<Phone> mapToPhoneSet(Set<PhoneDto> dtos);
 }

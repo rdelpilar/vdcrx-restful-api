@@ -2,6 +2,7 @@ package com.vdcrx.rest.api.v1.mapper.entities;
 
 import com.vdcrx.rest.api.v1.model.dto.AddressDto;
 import com.vdcrx.rest.domain.entities.Address;
+import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -14,7 +15,9 @@ import java.util.Set;
  * @author Ranel del Pilar
  */
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring",
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AddressMapper {
     AddressDto mapToAddressDto(Address address);
     Address mapToAddress(AddressDto dto);

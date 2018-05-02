@@ -1,8 +1,12 @@
 package com.vdcrx.rest.api.v1.mapper.entities;
 
 import com.vdcrx.rest.api.v1.model.dto.SpecialtyDto;
+import com.vdcrx.rest.domain.entities.Person;
 import com.vdcrx.rest.domain.entities.Specialty;
+import com.vdcrx.rest.domain.entities.Veterinarian;
 import com.vdcrx.rest.domain.entities.VeterinarianSpecialty;
+import com.vdcrx.rest.domain.enums.VetSpecialtyType;
+import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -10,17 +14,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Specialty to DTO mapper
+ * SpecialtyService to DTO mapper
  *
  * @author Ranel del Pilar
  */
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring",
+        collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class SpecialtyMapper {
-    public SpecialtyDto mapToSpecialtyDto(Specialty specialty) {
+
+    public SpecialtyDto mapToSpecialtyDto(final Specialty specialty) {
 
         SpecialtyDto dto = new SpecialtyDto();
-        dto.setUuid(specialty.getUuid());
+        dto.setId(specialty.getId());
 
         if(specialty instanceof VeterinarianSpecialty)
             dto.setSpecialty(((VeterinarianSpecialty) specialty).getVetSpecialtyType().name());
@@ -28,12 +35,27 @@ public abstract class SpecialtyMapper {
         return dto;
     }
 
-    public Set<SpecialtyDto> mapToSpecialtyDtoSet(Set<Specialty> specialties) {
+    public Set<SpecialtyDto> mapToSpecialtyDtoSet(final Set<Specialty> specialties) {
         Set<SpecialtyDto> outgoingSpecialtyDtos = specialties
                 .stream()
                 .map(this::mapToSpecialtyDto)
                 .collect(Collectors.toSet());
 
         return outgoingSpecialtyDtos;
+    }
+
+    public Specialty mapToSpecialty(SpecialtyDto dto) {
+        return new VeterinarianSpecialty(VetSpecialtyType.valueOf(dto.getSpecialty()));
+    }
+
+    public Specialty mapToSpecialty(final Person person, final SpecialtyDto dto) {
+
+        Specialty specialty = null;
+
+        if(person instanceof Veterinarian) {
+            specialty = new VeterinarianSpecialty(VetSpecialtyType.valueOf(dto.getSpecialty()));
+        }
+
+        return specialty;
     }
 }
