@@ -19,11 +19,11 @@ import java.util.Set;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class FacilityMapper {
 
-    public abstract FacilityDto mapToFacilityDto(Facility facility);
+    public abstract FacilityDto mapToFacilityDto(final Facility facility);
 
-    public Facility mapToFacility(FacilityDto dto) {
+    public Facility mapToFacility(final FacilityDto dto) {
         return new Facility(dto.getFacilityType(), dto.getName());
     }
 
-    public abstract Set<FacilityDto> mapToFacilityDtoSet(Set<Facility> facilities);
+    public abstract Set<FacilityDto> mapToFacilityDtoSet(final Set<Facility> facilities);
 }

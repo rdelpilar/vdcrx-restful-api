@@ -21,12 +21,12 @@ import static com.vdcrx.rest.utils.PhoneNumberUtil.stripWhitespaces;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class PhoneMapper {
 
-    public abstract PhoneDto mapToPhoneDto(Phone phone);
+    public abstract PhoneDto mapToPhoneDto(final Phone phone);
 
-    public Phone mapToPhone(PhoneDto dto) {
+    public Phone mapToPhone(final PhoneDto dto) {
         return new Phone(dto.getPhoneType(), stripWhitespaces(dto.getPhone()), dto.getPhoneExt());
     }
 
-    public abstract Set<PhoneDto> mapToPhoneDtoSet(Set<Phone> phones);
-    public abstract Set<Phone> mapToPhoneSet(Set<PhoneDto> dtos);
+    public abstract Set<PhoneDto> mapToPhoneDtoSet(final Set<Phone> phones);
+    public abstract Set<Phone> mapToPhoneSet(final Set<PhoneDto> dtos);
 }

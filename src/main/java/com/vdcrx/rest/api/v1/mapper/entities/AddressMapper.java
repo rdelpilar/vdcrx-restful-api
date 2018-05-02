@@ -19,12 +19,12 @@ import java.util.Set;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AddressMapper {
-    AddressDto mapToAddressDto(Address address);
-    Address mapToAddress(AddressDto dto);
+    AddressDto mapToAddressDto(final Address address);
+    Address mapToAddress(final AddressDto dto);
 
-    Set<AddressDto> mapToAddressDtoSet(Set<Address> addresses);
-    Set<Address> mapToAddressSet(Set<AddressDto> addressDtos);
+    Set<AddressDto> mapToAddressDtoSet(final Set<Address> addresses);
+    Set<Address> mapToAddressSet(final Set<AddressDto> addressDtos);
 
-    Set<AddressDto> mapListToAddressDtoSet(List<Address> addresses);
-    Set<AddressDto> mapListToAddressSet(List<AddressDto> addressDtos);
+    Set<AddressDto> mapListToAddressDtoSet(final List<Address> addresses);
+    Set<AddressDto> mapListToAddressSet(final List<AddressDto> addressDtos);
 }

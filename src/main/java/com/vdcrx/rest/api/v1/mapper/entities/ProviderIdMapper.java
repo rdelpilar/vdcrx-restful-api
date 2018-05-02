@@ -18,10 +18,11 @@ import java.util.Set;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProviderIdMapper {
-    ProviderIdDto mapToProviderIdDto(ProviderId providerId);
-    ProviderId mapToProviderId(ProviderIdDto dto);
 
-    Set<ProviderIdDto> mapToProviderIdDtoSet(Set<ProviderId> providerIds);
+    ProviderIdDto mapToProviderIdDto(final ProviderId providerId);
+    ProviderId mapToProviderId(final ProviderIdDto dto);
+
+    Set<ProviderIdDto> mapToProviderIdDtoSet(final Set<ProviderId> providerIds);
 }
 
 

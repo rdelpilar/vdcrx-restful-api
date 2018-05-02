@@ -36,26 +36,22 @@ public abstract class SpecialtyMapper {
     }
 
     public Set<SpecialtyDto> mapToSpecialtyDtoSet(final Set<Specialty> specialties) {
-        Set<SpecialtyDto> outgoingSpecialtyDtos = specialties
+        return specialties
                 .stream()
                 .map(this::mapToSpecialtyDto)
                 .collect(Collectors.toSet());
-
-        return outgoingSpecialtyDtos;
     }
 
-    public Specialty mapToSpecialty(SpecialtyDto dto) {
+    public Specialty mapToSpecialty(final SpecialtyDto dto) {
         return new VeterinarianSpecialty(VetSpecialtyType.valueOf(dto.getSpecialty()));
     }
 
     public Specialty mapToSpecialty(final Person person, final SpecialtyDto dto) {
 
-        Specialty specialty = null;
-
         if(person instanceof Veterinarian) {
-            specialty = new VeterinarianSpecialty(VetSpecialtyType.valueOf(dto.getSpecialty()));
+            return new VeterinarianSpecialty(VetSpecialtyType.valueOf(dto.getSpecialty()));
         }
 
-        return specialty;
+        return null;
     }
 }

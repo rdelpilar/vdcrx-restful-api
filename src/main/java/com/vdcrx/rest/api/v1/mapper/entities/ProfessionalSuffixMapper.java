@@ -19,9 +19,10 @@ import java.util.Set;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProfessionalSuffixMapper {
-    ProfessionalSuffixDto mapToProfessionalSuffixDto(ProfessionalSuffix suffix);
-    ProfessionalSuffix mapToProfessionalSuffix(ProfessionalSuffixDto dto);
 
-    Set<ProfessionalSuffixDto> mapToProfessionalSuffixDtoSet(Set<ProfessionalSuffix> suffixes);
-    Set<ProfessionalSuffixDto> mapListToProfessionalSuffixDtoSet(List<ProfessionalSuffix> suffixes);
+    ProfessionalSuffixDto mapToProfessionalSuffixDto(final ProfessionalSuffix suffix);
+    ProfessionalSuffix mapToProfessionalSuffix(final ProfessionalSuffixDto dto);
+
+    Set<ProfessionalSuffixDto> mapToProfessionalSuffixDtoSet(final Set<ProfessionalSuffix> suffixes);
+    Set<ProfessionalSuffixDto> mapListToProfessionalSuffixDtoSet(final List<ProfessionalSuffix> suffixes);
 }
