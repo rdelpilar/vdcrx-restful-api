@@ -6,9 +6,6 @@ import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-import java.util.Set;
-
 /**
  * Professional suffix to Dto mapper
  *
@@ -19,10 +16,6 @@ import java.util.Set;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProfessionalSuffixMapper {
-
     ProfessionalSuffixDto mapToProfessionalSuffixDto(final ProfessionalSuffix suffix);
     ProfessionalSuffix mapToProfessionalSuffix(final ProfessionalSuffixDto dto);
-
-    Set<ProfessionalSuffixDto> mapToProfessionalSuffixDtoSet(final Set<ProfessionalSuffix> suffixes);
-    Set<ProfessionalSuffixDto> mapListToProfessionalSuffixDtoSet(final List<ProfessionalSuffix> suffixes);
 }

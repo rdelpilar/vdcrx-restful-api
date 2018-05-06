@@ -16,7 +16,6 @@ import org.mapstruct.ReportingPolicy;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SignatureMapper {
-
     SignatureDto mapToSignatureDto(final Signature signature);
     Signature mapToSignature(final SignatureDto dto);
 }

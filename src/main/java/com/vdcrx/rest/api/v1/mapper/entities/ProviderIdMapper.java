@@ -6,8 +6,6 @@ import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Set;
-
 /**
  * Provider identifier to Dto mapper
  *
@@ -18,11 +16,8 @@ import java.util.Set;
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProviderIdMapper {
-
     ProviderIdDto mapToProviderIdDto(final ProviderId providerId);
     ProviderId mapToProviderId(final ProviderIdDto dto);
-
-    Set<ProviderIdDto> mapToProviderIdDtoSet(final Set<ProviderId> providerIds);
 }
 
 

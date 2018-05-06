@@ -21,10 +21,5 @@ import java.util.Set;
 public interface AddressMapper {
     AddressDto mapToAddressDto(final Address address);
     Address mapToAddress(final AddressDto dto);
-
-    Set<AddressDto> mapToAddressDtoSet(final Set<Address> addresses);
-    Set<Address> mapToAddressSet(final Set<AddressDto> addressDtos);
-
-    Set<AddressDto> mapListToAddressDtoSet(final List<Address> addresses);
-    Set<AddressDto> mapListToAddressSet(final List<AddressDto> addressDtos);
+    List<AddressDto> mapToAddressDtoList(final Set<Address> addresses);
 }

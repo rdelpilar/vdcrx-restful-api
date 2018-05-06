@@ -10,9 +10,6 @@ import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 /**
  * SpecialtyService to DTO mapper
  *
@@ -33,13 +30,6 @@ public abstract class SpecialtyMapper {
             dto.setSpecialty(((VeterinarianSpecialty) specialty).getVetSpecialtyType().name());
 
         return dto;
-    }
-
-    public Set<SpecialtyDto> mapToSpecialtyDtoSet(final Set<Specialty> specialties) {
-        return specialties
-                .stream()
-                .map(this::mapToSpecialtyDto)
-                .collect(Collectors.toSet());
     }
 
     public Specialty mapToSpecialty(final SpecialtyDto dto) {

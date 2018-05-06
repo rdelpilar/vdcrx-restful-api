@@ -1,5 +1,6 @@
 package com.vdcrx.rest.api.v1.mapper.entities;
 
+import com.vdcrx.rest.api.v1.model.dto.PersonBasicDto;
 import com.vdcrx.rest.api.v1.model.dto.VetDto;
 import com.vdcrx.rest.domain.entities.Veterinarian;
 import org.mapstruct.*;
@@ -48,4 +49,6 @@ public abstract class VeterinarianMapper {
             @Mapping(target = "specialties", source = "specialties")
     })
     public abstract VetDto mapToVetDto(Veterinarian veterinarian);
+
+    public abstract PersonBasicDto mapToPersonBasicDto(Veterinarian veterinarian);
 }
