@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 /**
- * SpecialtyService to DTO mapper
+ * Specialty mapper
  *
  * @author Ranel del Pilar
  */

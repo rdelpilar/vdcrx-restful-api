@@ -1,16 +1,13 @@
 package com.vdcrx.rest.api.v1.mapper.entities;
 
-import com.vdcrx.rest.api.v1.model.dto.AddressDto;
-import com.vdcrx.rest.domain.entities.Address;
+import com.vdcrx.rest.api.v1.model.dto.SigCodeDto;
+import com.vdcrx.rest.domain.entities.SigCode;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-import java.util.Set;
-
 /**
- * Address mapper
+ * Sig code mapper
  *
  * @author Ranel del Pilar
  */
@@ -18,8 +15,7 @@ import java.util.Set;
 @Mapper(componentModel = "spring",
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface AddressMapper {
-    AddressDto mapToAddressDto(final Address address);
-    Address mapToAddress(final AddressDto dto);
-    List<AddressDto> mapToAddressDtoList(final Set<Address> addresses);
+public interface SigCodeMapper {
+    SigCode mapToSigCode(SigCodeDto dto);
+    SigCodeDto mapToSigCodeDto(SigCode sigCode);
 }
