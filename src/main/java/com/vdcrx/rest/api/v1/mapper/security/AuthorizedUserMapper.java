@@ -1,6 +1,6 @@
 package com.vdcrx.rest.api.v1.mapper.security;
 
-import com.vdcrx.rest.api.v1.model.dto.jwt.JwtAuthorizedUserDto;
+import com.vdcrx.rest.api.v1.model.dto.JwtAuthorizedUserDto;
 import com.vdcrx.rest.domain.entities.Person;
 import com.vdcrx.rest.domain.entities.Role;
 import com.vdcrx.rest.security.user_details.AuthorizedUser;
@@ -23,10 +23,8 @@ public interface AuthorizedUserMapper {
 
     @Mappings({
             @Mapping(target = "id", source = "id"),
-            @Mapping(target = "username", source = "username"),
             @Mapping(target = "authorities", source = "authorities"),
             @Mapping(target = "enabled", source = "enabled"),
-            @Mapping(target = "lastPasswordResetDate", source = "lastPasswordResetDate"),
             @Mapping(target = "accountNonExpired", source = "accountNonExpired"),
             @Mapping(target = "accountNonLocked", source = "accountNonLocked"),
             @Mapping(target = "credentialsNonExpired", source = "credentialsNonExpired")
