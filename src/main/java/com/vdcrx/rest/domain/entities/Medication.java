@@ -162,7 +162,6 @@ public abstract class Medication extends BaseEntity {
         sb.append("Version: ").append(version).append("]; ");
 
         sb.append("[Sig codes empty]; ");
-        sb.append("[Diagnosis]; ");
 
         sb.append(super.toString());
 

@@ -93,7 +93,9 @@ public class PetMedication extends Medication {
 
     @Override
     public String toString() {
-        return "[Pets empty]; " + super.toString();
+        return "[Pets empty]; " +
+                "[Diagnoses empty]; " +
+                super.toString();
     }
 
     @Override
