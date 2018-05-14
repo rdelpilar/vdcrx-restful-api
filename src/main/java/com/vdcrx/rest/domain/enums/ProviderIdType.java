@@ -6,6 +6,6 @@ package com.vdcrx.rest.domain.enums;
  * @author Ranel del Pilar
  */
 
-public enum ProfessionalIdType {
+public enum ProviderIdType {
     VETERINARIAN, PHYSICIAN, NONE
 }

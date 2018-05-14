@@ -6,10 +6,11 @@ package com.vdcrx.rest.domain.enums;
  * @author Ranel del Pilar
  */
 
-public enum VeterinarianSpecialtyType {
+public enum VetSpecialtyType {
+
     ANESTHESIA,
     ANIMAL_WELFARE,
-    BEHAVIOR,
+    ANIMAL_BEHAVIOR,
     DENTISTRY,
     DERMATOLOGY,
     EMERGENCY_AND_CRITICAL_CARE,
@@ -42,5 +43,5 @@ public enum VeterinarianSpecialtyType {
     PRACTITIONER_REPTILE_AMPHIBIAN,
     PRACTITIONER_SWINE_HEALTH_MANAGEMENT,
     ZOOLOGICAL_MEDICINE,
-    OTHER
+    OTHER;
 }

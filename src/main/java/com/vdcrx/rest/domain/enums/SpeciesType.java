@@ -6,6 +6,6 @@ package com.vdcrx.rest.domain.enums;
  * @author Ranel del Pilar
  */
 
-public enum PetType {
+public enum SpeciesType {
     DOG, CAT, BIRD, RABBIT, FISH, OTHERS
 }
