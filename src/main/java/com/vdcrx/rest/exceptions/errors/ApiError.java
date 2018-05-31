@@ -1,5 +1,6 @@
 package com.vdcrx.rest.exceptions.errors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
@@ -24,44 +25,48 @@ public class ApiError {
 
     private Long timestamp;
     private String method;
-    private String code;
+    private Integer code;
     private HttpStatus status;
     private String path;
     private String message;
+    @JsonIgnore
     private String debugMessage;
+    @JsonIgnore
     private List<ApiSubError> subErrors;
 
 
     public ApiError() {
-        timestamp = Instant.now().toEpochMilli();
     }
 
     public ApiError(String method, String path, HttpStatus status) {
         this();
         this.method = method;
-        this.code = status.toString();
+        this.code = status.value();
         this.path = path;
         this.status = status;
+        this.timestamp = Instant.now().toEpochMilli();
     }
 
     public ApiError(String method, String path, HttpStatus status, Throwable ex) {
         this();
         this.method = method;
-        this.code = status.toString();
+        this.code = status.value();
         this.path = path;
         this.status = status;
         this.message = "Unexpected error";
+        this.timestamp = Instant.now().toEpochMilli();
         this.debugMessage = ex.getLocalizedMessage();
     }
 
-    public ApiError(String method, String path, HttpStatus status, String message, Throwable ex) {
+    public ApiError(String method, String path, String message, HttpStatus status /*, Throwable ex*/) {
         this();
         this.method = method;
-        this.code = status.toString();
+        this.code = status.value();
         this.path = path;
-        this.status = status;
         this.message = message;
-        this.debugMessage = ex.getLocalizedMessage();
+        this.status = status;
+        this.timestamp = Instant.now().toEpochMilli();
+        //this.debugMessage = ex.getLocalizedMessage();
     }
 
     private void addSubError(ApiSubError subError) {
