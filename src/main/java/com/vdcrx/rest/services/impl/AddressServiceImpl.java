@@ -12,14 +12,15 @@ import com.vdcrx.rest.services.AddressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Address service implementation
@@ -32,9 +33,9 @@ public class AddressServiceImpl implements AddressService {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private AddressRepository addressRepository;
-    private AddressMapper addressMapper;
-    private PersonRepository personRepository;
+    private final AddressRepository addressRepository;
+    private final AddressMapper addressMapper;
+    private final PersonRepository personRepository;
 
     @Autowired
     public AddressServiceImpl(AddressRepository addressRepository,
@@ -64,9 +65,8 @@ public class AddressServiceImpl implements AddressService {
     public AddressDto updateAddress(final UUID id, final UUID address_id, final AddressDto resource) throws DataAccessException {
         Assert(id, address_id, resource);
 
-        if(!personRepository.findById(id).isPresent()) {
+        if(!personRepository.findById(id).isPresent())
             throw new ResourceNotFoundException("No person found with id '" + id + "'");
-        }
 
         LOG.debug("Updating address with id '" + address_id + "'");
 
@@ -111,64 +111,59 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
-    public AddressDto findAddressById(final UUID id) {
-        Assert(id);
+    public AddressDto findAddressById(final UUID id, final UUID address_id) {
+        Assert(id, address_id);
 
-        LOG.debug("Retrieving address with id '" + id + "'");
+        if(!personRepository.findById(id).isPresent())
+            throw new ResourceNotFoundException("No person found with id '" + id + "'");
 
-        return addressRepository.findById(id)
+        LOG.debug("Retrieving address with id '" + address_id + "'");
+
+        return addressRepository.findById(address_id)
                 .map(addressMapper::mapToAddressDto)
-                .orElseThrow(() -> new ResourceNotFoundException("No address found!"));
+                .orElseThrow(() -> new ResourceNotFoundException("No address found with id '" + address_id + "'"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<AddressDto> findAddressesByPersonId(final UUID id) {
+    public List<AddressDto> findAddressesByPersonId(final UUID id) {
         Assert.notNull(id, "Person id must not be null!");
 
         LOG.debug("Retrieving addresses with person id '" + id + "'");
 
-        return addressMapperHelper(Optional.of(addressRepository.findAddressesByPersonUuid(id)));
+        Set<Address> addresses = addressRepository.findAddressesByPersonId(id);
+
+        AssertCollection(addresses, id.toString());
+
+        return addressMapperHelper(addresses);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<AddressDto> findAddressByUsername(final String username) {
+    public List<AddressDto> findAddressByUsername(final String username) {
         Assert.notNull(username, "Username must not be null!");
 
         LOG.debug("Retrieving addresses for username '" + username + "'");
 
-        return addressMapperHelper(Optional.of(addressRepository.findAddressesByPersonUsername(username)));
+        Set<Address> addresses = addressRepository.findAddressesByPersonUsername(username);
+
+        AssertCollection(addresses, username);
+
+        return addressMapperHelper(addresses);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<AddressDto> findAddressesByEmail(final String email) {
+    public List<AddressDto> findAddressesByEmail(final String email) {
         Assert.notNull(email, "Email must not be null!");
 
         LOG.debug("Retrieving addresses for email '" + email + "'");
 
-        return addressMapperHelper(Optional.of(addressRepository.findAddressesByPersonEmail(email)));
-    }
+        Set<Address> addresses = addressRepository.findAddressesByPersonEmail(email);
 
-    @Override
-    @Transactional(readOnly = true)
-    public Set<AddressDto> findAddressesByPhone(final String phone) {
-        Assert.notNull(phone, "Phone must not be null!");
+        AssertCollection(addresses, email);
 
-        LOG.debug("Retrieving addresses for phone '" + phone + "'");
-
-        return addressMapperHelper(Optional.of(addressRepository.findAddressesByPersonPhone(phone)));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<AddressDto> findAddressesByUsernameCol(final Set<String> usernames) {
-        Assert.notNull(usernames, "Usernames must not be null!");
-
-        usernames.forEach(username -> LOG.debug("Retrieving addresses for username '" + username + "'"));
-
-        return addressMapperHelper(Optional.of(addressRepository.findAddressesByPersonUsernameIn(usernames)));
+        return addressMapperHelper(addresses);
     }
 
     private AddressDto saveAndReturnDto(final Person person, final AddressDto dto) {
@@ -177,18 +172,17 @@ public class AddressServiceImpl implements AddressService {
         return addressMapper.mapToAddressDto(addressRepository.saveAndFlush(address));
     }
 
-    private Set<AddressDto> addressMapperHelper(Optional<Set<Address>> addresses) {
-        return addresses.map(addressMapper::mapToAddressDtoSet)
-                .orElseThrow(() -> new ResourceNotFoundException("No addresses found!"));
+    private List<AddressDto> addressMapperHelper(final Set<Address> addresses) {
+        return addresses
+                .stream()
+                .map(addressMapper::mapToAddressDto)
+                .sorted(Comparator.comparing(AddressDto::getAddressType))
+                .collect(Collectors.toList());
     }
 
-    private void Assert(final UUID id) {
-        Assert.notNull(id, "Address id must not be null!");
-    }
-
-    private void Assert(final UUID id, final UUID addr_id) {
+    private void Assert(final UUID id, final UUID address_id) {
         Assert.notNull(id, "Person id must not be null!");
-        Assert.notNull(addr_id, "Address id must not be null!");
+        Assert.notNull(address_id, "Address id must not be null!");
     }
 
     private void Assert(final UUID id, final AddressDto resource) {
@@ -196,8 +190,13 @@ public class AddressServiceImpl implements AddressService {
         Assert.notNull(resource, "Address DTO resource must not be null!");
     }
 
-    private void Assert(final UUID id, final UUID addr_id, final AddressDto resource) {
+    private void Assert(final UUID id, final UUID address_id, final AddressDto resource) {
         Assert(id, resource);
-        Assert.notNull(addr_id, "Address id must not be null!");
+        Assert.notNull(address_id, "Address id must not be null!");
+    }
+
+    private void AssertCollection(final Collection<?> collection, final String param) {
+        if(collection.isEmpty())
+            throw new ResourceNotFoundException("No address found using '" + param + "'");
     }
 }

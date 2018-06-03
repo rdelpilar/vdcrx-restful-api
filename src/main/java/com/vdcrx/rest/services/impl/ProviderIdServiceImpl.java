@@ -2,7 +2,9 @@ package com.vdcrx.rest.services.impl;
 
 import com.vdcrx.rest.api.v1.mapper.entities.ProviderIdMapper;
 import com.vdcrx.rest.api.v1.model.dto.ProviderIdDto;
+import com.vdcrx.rest.domain.entities.Person;
 import com.vdcrx.rest.domain.entities.ProviderId;
+import com.vdcrx.rest.domain.entities.Veterinarian;
 import com.vdcrx.rest.domain.enums.ProviderIdType;
 import com.vdcrx.rest.exceptions.ResourceNotFoundException;
 import com.vdcrx.rest.repositories.PersonRepository;
@@ -16,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -31,9 +31,9 @@ public class ProviderIdServiceImpl implements ProviderIdService {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private ProviderIdRepository providerIdRepository;
-    private ProviderIdMapper providerIdMapper;
-    private PersonRepository personRepository;
+    private final ProviderIdRepository providerIdRepository;
+    private final ProviderIdMapper providerIdMapper;
+    private final PersonRepository personRepository;
 
     @Autowired
     public ProviderIdServiceImpl(ProviderIdRepository providerIdRepository,
@@ -54,8 +54,8 @@ public class ProviderIdServiceImpl implements ProviderIdService {
         return personRepository
                 .findById(id)
                 .map(person ->
-                        saveAndReturnDto(resource)
-                ).orElseThrow(() -> new ResourceNotFoundException("No provider identifier found with id '" + id + "'"));
+                        saveAndReturnDto(person, resource)
+                ).orElseThrow(() -> new ResourceNotFoundException("No person found with id '" + id + "'"));
     }
 
     @Override
@@ -63,21 +63,17 @@ public class ProviderIdServiceImpl implements ProviderIdService {
     public ProviderIdDto updateProviderIdentifier(final UUID id, final UUID provider_id, final ProviderIdDto resource) throws DataAccessException {
         Assert(id, provider_id, resource);
 
-        if(!personRepository.findById(id).isPresent()) {
+        if(!personRepository.findById(id).isPresent())
             throw new ResourceNotFoundException("No person found with id '" + id + "'");
-        }
 
         LOG.debug("Updating provider identifier with id '" + provider_id + "'");
 
         return providerIdRepository.findById(provider_id)
                 .map(providerId -> {
-                    ProviderIdType providerIdType = resource.getProviderIdType();
                     String dea = resource.getDea();
                     String me = resource.getMe();
                     String npi = resource.getNpi();
 
-                    if (providerIdType != null && !providerIdType.name().equals(providerId.getProviderIdType().name()))
-                        providerId.setProviderIdType(providerIdType);
                     if (dea != null && !dea.equals(providerId.getDea()))
                         providerId.setDea(dea);
                     if (me != null && !me.equals(providerId.getMe()))
@@ -102,21 +98,29 @@ public class ProviderIdServiceImpl implements ProviderIdService {
         providerIdRepository.deleteById(provider_id);
     }
 
-    private ProviderIdDto saveAndReturnDto(final ProviderIdDto resource) {
+    private ProviderIdDto saveAndReturnDto(final Person person, final ProviderIdDto resource) {
         ProviderId providerId = providerIdMapper.mapToProviderId(resource);
+        providerId.setPerson(person);
+
+        if(person instanceof Veterinarian)
+            providerId.setProviderIdType(ProviderIdType.VETERINARIAN);
+
         return providerIdMapper.mapToProviderIdDto(providerIdRepository.saveAndFlush(providerId));
     }
 
     @Override
     @Transactional
-    public ProviderIdDto findProviderIdById(final UUID id) {
-        Assert(id);
+    public ProviderIdDto findProviderIdById(final UUID id, final UUID provider_id) {
+        Assert(id, provider_id);
 
-        LOG.debug("Retrieving professional identifier by id '" + id + "'");
+        if(!personRepository.findById(id).isPresent())
+            throw new ResourceNotFoundException("No person found with id '" + id + "'");
 
-        return providerIdRepository.findById(id)
+        LOG.debug("Retrieving professional identifier by id '" + provider_id + "'");
+
+        return providerIdRepository.findById(provider_id)
                 .map(providerIdMapper::mapToProviderIdDto)
-                .orElseThrow(() -> new ResourceNotFoundException("No professional identifier found with id '" + id + "'"));
+                .orElseThrow(() -> new ResourceNotFoundException("No professional identifier found with id '" + provider_id + "'"));
     }
 
     @Override
@@ -124,11 +128,11 @@ public class ProviderIdServiceImpl implements ProviderIdService {
     public ProviderIdDto findProviderIdByPersonId(final UUID id) {
         Assert.notNull(id, "Person Id must not be null!");
 
-        LOG.debug("Retrieving Professional Identifier by person with id '" + id + "'");
+        LOG.debug("Retrieving professional identifier by person with id '" + id + "'");
 
-        return providerIdRepository.findProviderIdByPersonUuid(id)
+        return providerIdRepository.findProviderIdByPersonId(id)
                 .map(providerIdMapper::mapToProviderIdDto)
-                .orElseThrow(() -> new ResourceNotFoundException("No Person found with id '" + id + "'"));
+                .orElseThrow(() -> new ResourceNotFoundException("No professional identifier found with id '" + id + "'"));
     }
 
     @Override
@@ -136,9 +140,11 @@ public class ProviderIdServiceImpl implements ProviderIdService {
     public ProviderIdDto findProviderIdByUsername(final String username) {
         Assert.notNull(username, "Username must not be null!");
 
-        LOG.debug("Retrieving Professional Identifier for username '" + username + "'");
+        LOG.debug("Retrieving professional identifier for username '" + username + "'");
 
-        return providerIdMapperHelper(providerIdRepository.findProviderIdByPersonUsername(username));
+        return providerIdRepository.findProviderIdByPersonUsername(username)
+                .map(providerIdMapper::mapToProviderIdDto)
+                .orElseThrow(() -> new ResourceNotFoundException("No provider identifier found using '" + username + "'"));
     }
 
     @Override
@@ -146,56 +152,25 @@ public class ProviderIdServiceImpl implements ProviderIdService {
     public ProviderIdDto findProviderIdByEmail(final String email) {
         Assert.notNull(email, "Email must not be null!");
 
-        LOG.debug("Retrieving Professional Identifier for email '" + email + "'");
+        LOG.debug("Retrieving professional identifier for email '" + email + "'");
 
-        return providerIdMapperHelper(providerIdRepository.findProviderIdByPersonEmail(email));
+        return providerIdRepository.findProviderIdByPersonEmail(email)
+                .map(providerIdMapper::mapToProviderIdDto)
+                .orElseThrow(() -> new ResourceNotFoundException("No provider identifier found using '" + email + "'"));
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ProviderIdDto findProviderIdByPhone(final String phone) {
-        Assert.notNull(phone, "Phone must not be null!");
-
-        LOG.debug("Retrieving Professional Identifier for phone '" + phone + "'");
-
-        return providerIdMapperHelper(providerIdRepository.findProviderIdByPhone(phone));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<ProviderIdDto> findProviderIdsByUsernameCol(final Set<String> usernames) {
-        Assert.notNull(usernames, "Usernames must not be null!");
-
-        usernames.forEach(username -> LOG.debug("Retrieving Professional Identifier for username '" + username + "'"));
-
-        Optional<Set<ProviderId>> providerIds = Optional.of(providerIdRepository.findProviderIdByPersonUsernameIn(usernames));
-
-        return providerIds
-                .map(providerIdMapper::mapToProviderIdDtoSet)
-                .orElseThrow(() -> new ResourceNotFoundException("No Professional Identifiers found from list of usernames!"));
-    }
-
-    private ProviderIdDto providerIdMapperHelper(Optional<ProviderId> providerId) {
-        return providerId.map(providerIdMapper::mapToProviderIdDto)
-                .orElseThrow(() -> new ResourceNotFoundException("No Professional Identifier found!"));
-    }
-
-    private void Assert(final UUID id) {
-        Assert.notNull(id, "Professional Identifier id must not be null!");
-    }
-
-    private void Assert(final UUID id, final UUID phone_id) {
+    private void Assert(final UUID id, final UUID prov_id) {
         Assert.notNull(id, "Person id must not be null!");
-        Assert.notNull(phone_id, "Professional Identifier id must not be null!");
+        Assert.notNull(prov_id, "Professional identifier id must not be null!");
     }
 
     private void Assert(final UUID id, final ProviderIdDto resource) {
         Assert.notNull(id, "Person id must not be null!");
-        Assert.notNull(resource, "Professional Identifier Dto resource must not be null!");
+        Assert.notNull(resource, "Professional identifier Dto resource must not be null!");
     }
 
-    private void Assert(final UUID id, final UUID phone_id, final ProviderIdDto resource) {
+    private void Assert(final UUID id, final UUID prov_id, final ProviderIdDto resource) {
         Assert(id, resource);
-        Assert.notNull(phone_id, "Professional Identifier id must not be null!");
+        Assert.notNull(prov_id, "Professional identifier id must not be null!");
     }
 }

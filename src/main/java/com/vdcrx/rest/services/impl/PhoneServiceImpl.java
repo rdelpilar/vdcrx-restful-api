@@ -17,9 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vdcrx.rest.utils.PhoneNumberUtil.stripWhitespaces;
 
@@ -34,9 +33,9 @@ public class PhoneServiceImpl implements PhoneService {
 
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    private PhoneRepository phoneRepository;
-    private PhoneMapper phoneMapper;
-    private PersonRepository personRepository;
+    private final PhoneRepository phoneRepository;
+    private final PhoneMapper phoneMapper;
+    private final PersonRepository personRepository;
 
     @Autowired
     public PhoneServiceImpl(PhoneRepository phoneRepository,
@@ -105,54 +104,59 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     @Transactional(readOnly = true)
-    public PhoneDto findPhoneById(final UUID id) {
-        Assert(id);
+    public PhoneDto findPhoneById(final UUID id, final UUID phone_id) {
+        Assert(id, phone_id);
 
-        LOG.debug("Retrieving phone with id '" + id + "'");
+        if(!personRepository.findById(id).isPresent())
+            throw new ResourceNotFoundException("No person found with id '" + id + "'");
 
-        return phoneRepository.findById(id)
+        LOG.debug("Retrieving phone with id '" + phone_id + "'");
+
+        return phoneRepository.findById(phone_id)
                 .map(phoneMapper::mapToPhoneDto)
-                .orElseThrow(() -> new ResourceNotFoundException("No phone found with id '" + id + "'"));
+                .orElseThrow(() -> new ResourceNotFoundException("No phone found with id '" + phone_id + "'"));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<PhoneDto> findPhonesByPersonId(final UUID id) {
+    public List<PhoneDto> findPhonesByPersonId(final UUID id) {
         Assert.notNull(id, "Person id must not be null!");
 
         LOG.debug("Retrieving phones with person id '" + id + "'");
 
-        return phoneMapperHelper(Optional.of(phoneRepository.findPhonesByPersonUuid(id)));
+        Set<Phone> phones = phoneRepository.findPhonesByPersonId(id);
+
+        AssertCollection(phones, id.toString());
+
+        return phoneMapperHelper(phones);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<PhoneDto> findPhonesByUsername(final String username) {
+    public List<PhoneDto> findPhonesByUsername(final String username) {
         Assert.notNull(username, "Username must not be null!");
 
         LOG.debug("Retrieving phones for username '" + username + "'");
 
-        return phoneMapperHelper(Optional.of(phoneRepository.findPhoneByPersonUsername(username)));
+        Set<Phone> phones = phoneRepository.findPhoneByPersonUsername(username);
+
+        AssertCollection(phones, username);
+
+        return phoneMapperHelper(phones);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Set<PhoneDto> findPhonesByEmail(final String email) {
+    public List<PhoneDto> findPhonesByEmail(final String email) {
         Assert.notNull(email, "Email must not be null!");
 
         LOG.debug("Retrieving phone for email '" + email + "'");
 
-        return phoneMapperHelper(Optional.of(phoneRepository.findPhoneByPersonEmail(email)));
-    }
+        Set<Phone> phones = phoneRepository.findPhoneByPersonEmail(email);
 
-    @Override
-    @Transactional(readOnly = true)
-    public Set<PhoneDto> findPhonesByUsernameCol(final Set<String> usernames) {
-        Assert.notNull(usernames, "Usernames must not be null!");
+        AssertCollection(phones, email);
 
-        usernames.forEach(username -> LOG.debug("Retrieving phones for username '" + username + "'"));
-
-        return phoneMapperHelper(Optional.of(phoneRepository.findPhonesByPersonUsernameIn(usernames)));
+        return phoneMapperHelper(phones);
     }
 
     private PhoneDto saveAndReturnDto(final Person person, final PhoneDto resource) {
@@ -162,13 +166,12 @@ public class PhoneServiceImpl implements PhoneService {
         return phoneMapper.mapToPhoneDto(phoneRepository.saveAndFlush(phone));
     }
 
-    private Set<PhoneDto> phoneMapperHelper(Optional<Set<Phone>> phones) {
-        return phones.map(phoneMapper::mapToPhoneDtoSet)
-                .orElseThrow(() -> new ResourceNotFoundException("No phones found!"));
-    }
-
-    private void Assert(final UUID id) {
-        Assert.notNull(id, "Phone id must not be null!");
+    private List<PhoneDto> phoneMapperHelper(final Set<Phone> phones) {
+        return phones
+                .stream()
+                .map(phoneMapper::mapToPhoneDto)
+                .sorted(Comparator.comparing(PhoneDto::getPhone))
+                .collect(Collectors.toList());
     }
 
     private void Assert(final UUID id, final UUID phone_id) {
@@ -184,5 +187,10 @@ public class PhoneServiceImpl implements PhoneService {
     private void Assert(final UUID id, final UUID phone_id, final PhoneDto resource) {
         Assert(id, resource);
         Assert.notNull(phone_id, "Phone id must not be null!");
+    }
+
+    private void AssertCollection(final Collection<?> collection, final String param) {
+        if(collection.isEmpty())
+            throw new ResourceNotFoundException("No phone found using '" + param + "'");
     }
 }
