@@ -1,10 +1,9 @@
 package com.vdcrx.rest.services;
 
 import com.vdcrx.rest.api.v1.model.dto.FacilityDto;
-import com.vdcrx.rest.domain.entities.Facility;
 import org.springframework.dao.DataAccessException;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -25,10 +24,8 @@ public interface FacilityService {
     void deleteFacility(final UUID id, final UUID facility_id) throws DataAccessException;
 
     /* Retrieve */
-    FacilityDto findFacilityById(final UUID id);
-    Set<FacilityDto> findFacilitiesByPersonId(final UUID id);
-    Set<FacilityDto> findFacilitiesByUsername(final String username);
-    Set<FacilityDto> findFacilitiesByEmail(final String email);
-    Set<FacilityDto> findFacilitiesByPhone(final String phone);
-    Set<Facility> findFacilitiesByUsernameIn(final Set<String> usernames);
+    FacilityDto findFacilityById(final UUID id, final UUID facility_id);
+    List<FacilityDto> findFacilitiesByPersonId(final UUID id);
+    List<FacilityDto> findFacilitiesByUsername(final String username);
+    List<FacilityDto> findFacilitiesByEmail(final String email);
 }

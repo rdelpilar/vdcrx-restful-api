@@ -3,7 +3,6 @@ package com.vdcrx.rest.services;
 import com.vdcrx.rest.api.v1.model.dto.ProviderIdDto;
 import org.springframework.dao.DataAccessException;
 
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -24,10 +23,8 @@ public interface ProviderIdService {
     void deleteProviderIdentifier(final UUID id, final UUID provider_id) throws DataAccessException;
 
     /* Retrieve */
-    ProviderIdDto findProviderIdById(final UUID id);
+    ProviderIdDto findProviderIdById(final UUID id, final UUID provider_Id);
     ProviderIdDto findProviderIdByPersonId(final UUID id);
     ProviderIdDto findProviderIdByUsername(final String username);
     ProviderIdDto findProviderIdByEmail(final String email);
-    ProviderIdDto findProviderIdByPhone(final String phone);
-    Set<ProviderIdDto> findProviderIdsByUsernameCol(final Set<String> usernameSet);
 }
