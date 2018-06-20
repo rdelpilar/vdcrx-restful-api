@@ -33,7 +33,7 @@ import static com.vdcrx.rest.utils.PhoneNumberUtil.stripWhitespaces;
  */
 
 @Service
-@VeterinarianRole // TODO https://www.intertech.com/Blog/spring-4-meta-annotations/
+@VeterinarianRole
 public class VeterinarianServiceImpl implements VeterinarianService {
 
     private static final Logger LOG = LoggerFactory.getLogger(VeterinarianServiceImpl.class);

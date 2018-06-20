@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasRole('ROLE_VETERINARIAN')")
+//@PreAuthorize("hasAuthority(T(com.vdcrx.rest.domain.enums.RoleType).VETERINARIAN.name())")
+@PreAuthorize("hasAuthority('VETERINARIAN')")
+// https://stackoverflow.com/questions/30788105/spring-security-hasrole-not-working
 public @interface VeterinarianRole {
 }
