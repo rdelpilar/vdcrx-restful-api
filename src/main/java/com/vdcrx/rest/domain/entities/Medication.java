@@ -38,7 +38,7 @@ public abstract class Medication extends BaseEntity {
     @Setter
     @NotBlank(message = "{message.Medication.name.blank}")
     @Size(min = 3, max = 64, message = "{message.Medication.name.size}")
-    @Column(name = "NAME", nullable = false, length = 32, columnDefinition = "VARCHAR(32) DEFAULT ''")
+    @Column(name = "NAME", nullable = false, length = 64)
     private String name;
 
     @Getter
@@ -65,23 +65,25 @@ public abstract class Medication extends BaseEntity {
     @Setter
     @NotNull(message = "{message.Medication.flavoringType.null}")
     @Enumerated(EnumType.STRING)
-    @Column(name = "FLAVORING", nullable = false, columnDefinition = "VARCHAR(16) NOT NULL", length = 16)
+    @Column(name = "FLAVORING", nullable = false)//, columnDefinition = "VARCHAR(16) NOT NULL", length = 16)
     private FlavoringType flavoringType = FlavoringType.NONE;
 
     @Getter
     @Setter
-    @Column(name = "REFILL", nullable = false, columnDefinition = "BOOLEAN(1) DEFAULT 0")
+    @Column(name = "REFILL", nullable = false)//, columnDefinition = "BOOLEAN(1) DEFAULT 0")
     private boolean refill;
 
     @Getter
     @Setter
-    @Column(name = "POST_DATE_REFILL", nullable = false, columnDefinition = "BIGINT(20) DEFAULT 0")
+    @Column(name = "POST_DATE_REFILL", nullable = false)//, columnDefinition = "BIGINT(20) DEFAULT 0")
     private long postDateRefill;
 
     @Getter
     @Setter
-    @Column(name = "INTERVAL", nullable = false, columnDefinition = "VARCHAR(32) NOT NULL", length = 32)
-    private String interval;
+    @NotBlank(message = "{message.Medication.intervals.blank}")
+    @Size(min = 3, max = 32, message = "{message.Medication.intervals.size}")
+    @Column(name = "INTERVALS", nullable = false, length = 32)
+    private String intervals;
 
     @Getter
     @Setter
@@ -124,7 +126,7 @@ public abstract class Medication extends BaseEntity {
 
     @Getter
     @Setter
-    @Column(name = "GENERIC", nullable = false, columnDefinition = "BOOLEAN(1) DEFAULT 0")
+    @Column(name = "GENERIC", nullable = false)//, columnDefinition = "BOOLEAN(1) DEFAULT 0")
     private boolean generic;
 
     @Getter
@@ -154,7 +156,7 @@ public abstract class Medication extends BaseEntity {
         sb.append("Flavoring: ").append(flavoringType).append("; ");
         sb.append("Refill: ").append(refill).append("; ");
         sb.append("Post Date Refill: ").append(postDateRefill).append("; ");
-        sb.append("Interval: ").append(interval).append("; ");
+        //sb.append("Interval: ").append(interval).append("; ");
         sb.append("Duration: ").append(duration).append("; ");
         sb.append("Generic: ").append(generic).append("; ");
         sb.append("Prescribed on: ").append(prescribedOn).append("; ");

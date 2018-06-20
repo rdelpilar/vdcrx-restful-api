@@ -108,7 +108,7 @@ public class Veterinarian extends Person {
     // Pet owner (Bi-directional Many-to-many //
     @NotAudited
     @Valid
-    @NotNull(message = "{message.Veterinarian.petOwners.null}")
+    //@NotNull(message = "{message.Veterinarian.petOwners.null}")
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "VETERINARIANS_PET_OWNERS",
             joinColumns = @JoinColumn(name = "VETERINARIAN_UUID"),
@@ -147,7 +147,7 @@ public class Veterinarian extends Person {
     // Pets (Bi-directional Many-to-many //
     @NotAudited
     @Valid
-    @NotNull(message = "{message.Veterinarian.pets.null}")
+    //@NotNull(message = "{message.Veterinarian.pets.null}")
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "VETERINARIANS_PETS",
             joinColumns = @JoinColumn(name = "VETERINARIAN_UUID"),

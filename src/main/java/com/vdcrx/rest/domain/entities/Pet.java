@@ -82,7 +82,7 @@ public class Pet extends BaseEntity {
 
     @Getter
     @Setter
-    @Column(name = "WEIGHT", nullable = false, columnDefinition = "DOUBLE PRECISION(3,5) DEFAULT 0")
+    @Column(name = "WEIGHT", nullable = false, columnDefinition = "DOUBLE PRECISION(3,2) DEFAULT 0")
     private double weight;
 
     @NotBlank(message = "{message.Pet.diseaseState.blank}")
